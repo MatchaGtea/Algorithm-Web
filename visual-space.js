@@ -107,7 +107,20 @@ function quickModel(){
 function quiltModel(){
  const m=vmodel('ica-quilt','ICA L1-1 · Quilt of Hexagonal Patches','วิธีสร้างแถวจาก ICA L1-1 และเฉลย · เพิ่ม input ตัวอย่าง6สีเพื่อสาธิต (ไม่ใช่ input ที่กำหนดในใบงาน)','efficiency');m.code=['เริ่มแถวล่างและนับสีน้ำเงิน','สองสีเหมือนกัน → ใช้สีเดิม','สองสีต่างกัน → ใช้สีที่เหลือจาก R,G,B','สร้างแถวใหม่ให้ครบ; นับสีน้ำเงินเพิ่ม','ทำซ้ำจนเหลือหนึ่งช่อง'];
  const all=[['R','G','B','R','B','G']];let count=all[0].filter(c=>c==='B').length;
- function snap(title,msg,line,active=[]){let cells=all.map((row,r)=>'<div class="quilt-row">'+row.map((v,j)=>'<span class="quilt-cell color-'+v+' '+(active[0]===r&&active[1]===j?'just-added':'')+'">'+v+'</span>').join('')+'</div>').reverse().join('');vframe(m,title,msg,{line,body:'<div class="quilt">'+cells+'</div>',vars:{blueCount:count,rows:all.length},table:{headers:['สี','ความหมาย'],rows:[['R','แดง'],['G','เขียว'],['B','น้ำเงิน']]}})}
+ function snap(title,msg,line,active=[]){
+  const size=all[0].length;
+  // Reserve the complete triangle before revealing any computed patch.
+  // Each (row,column) therefore keeps the same position in every frame.
+  const cells=Array.from({length:size},(_,r)=>{
+   const row=all[r]||[];
+   const slots=Array.from({length:size-r},(_,j)=>{
+    const value=row[j],visible=value!==undefined;
+    return '<span data-quilt-cell="'+r+':'+j+'" class="quilt-cell '+(visible?'color-'+value+(active[0]===r&&active[1]===j?' just-added':''):'quilt-placeholder')+'"'+(visible?'':' aria-hidden="true"')+'>'+(visible?value:'')+'</span>';
+   }).join('');
+   return '<div class="quilt-row" data-quilt-row="'+r+'">'+slots+'</div>';
+  }).reverse().join('');
+  vframe(m,title,msg,{line,body:'<div class="quilt">'+cells+'</div>',vars:{blueCount:count,rows:all.length},table:{headers:['สี','ความหมาย'],rows:[['R','แดง'],['G','เขียว'],['B','น้ำเงิน']]}});
+ }
  snap('แถวล่างเริ่มต้น','มีสีน้ำเงิน2ช่อง เริ่ม BlueCount=2',0);
  while(all.at(-1).length>1){const lower=all.at(-1),next=[];all.push(next);for(let j=0;j<lower.length-1;j++){const [a,b]=[lower[j],lower[j+1]],c=a===b?a:['R','G','B'].find(x=>x!==a&&x!==b);next.push(c);if(c==='B')count++;snap('สร้างสี '+c,a+' กับ '+b+' → '+c+(c==='B'?' จึงเพิ่ม BlueCount เป็น '+count:''),a===b?1:2,[all.length-1,j])}}
  snap('นับครบ · BlueCount='+count,'สร้างทุกช่องเพียงหนึ่งครั้ง จำนวนช่องทั้งหมด n(n+1)/2',4);m.result={count};return m;
