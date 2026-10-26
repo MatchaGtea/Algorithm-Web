@@ -39,3 +39,10 @@
 @media(max-width:750px){.v-event b{font-size:17px}.v-event p{font-size:14px}.sort-chart{gap:9px;padding-inline:16px}.sort-column{width:38px}.visual-lab{padding:14px}.v-graph{min-width:700px}.v-code li code{font-size:12px}.v-event{min-height:0}.v-title h3{font-size:19px}}
 @media(prefers-reduced-motion:reduce){.sort-bar{transition:none}}
 .radix-buckets{justify-content:flex-start;gap:8px}.radix-buckets .bucket{min-width:62px}.radix-buckets .bucket b{font-size:12px;min-height:24px;white-space:nowrap}.basic-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.basic-tabs button[aria-pressed=true]{color:#ac4e16;background:#fff0e4;border-color:#ecaf85}.readout>b{font-size:15px;line-height:1.9}.readout .event-kicker{margin-bottom:4px}
+
+/* Keep Quilt patches in their final slots while they are revealed. */
+.quilt-row{min-height:54px}
+.quilt-cell{flex-shrink:0}
+.quilt-placeholder{visibility:hidden;pointer-events:none}
+.quilt .just-added{animation:quilt-reveal .3s ease-out both}
+@keyframes quilt-reveal{from{opacity:0}to{opacity:1}}
